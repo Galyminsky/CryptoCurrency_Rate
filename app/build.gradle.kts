@@ -56,7 +56,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
-    implementation ("com.squareup.retrofit2:adapter-rxjava2:2.7.0")
+
 
     //Lifecycle
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
