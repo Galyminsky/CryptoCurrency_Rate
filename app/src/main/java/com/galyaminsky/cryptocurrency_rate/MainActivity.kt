@@ -16,9 +16,10 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
 
-       /* viewModel.priceList.observe(this, Observer {
+        viewModel.priceList.observe(this, Observer {
             Log.d("text_myLog", "Success in Activity: $it")
-        })*/
+        })
+
         viewModel.getDetailInfo("BTC").observe(this, Observer {
             Log.d("text_myLog", "Success in Activity: $it")
         })
