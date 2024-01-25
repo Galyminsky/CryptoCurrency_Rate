@@ -32,10 +32,12 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
             .map { it.data?.map { it.coinInfo?.name }?.joinToString(",").toString() }
             .flatMap { ApiFactory.apiService.getFullPriceList(fSyms = it) }
             .map { getPriceListFromRawData(it) }
+            .repeat()
+            .retry()
             .subscribeOn(Schedulers.io())
             .subscribe({
                 db.CoinPriceInfoDao().insertPriceList(it)
-                Log.d("text_myLog", "Success: $it")
+                Log.d("text_myLog", "Success VM: $it")
             }, {
                 Log.d("text_myLog", "Error: $it.message")
             })
