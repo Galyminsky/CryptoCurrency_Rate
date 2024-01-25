@@ -19,12 +19,13 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
     fun loadData() {
         val disposable = ApiFactory.apiService.getTopCoinsInfo()
             .map { it.data?.map { it.coinInfo?.name }?.joinToString(",").toString() }
+            .flatMap { ApiFactory.apiService.getFullPriceList(fSyms = it) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.d("TEST_MYLOG", it)
+                Log.d("text_myLog", it.toString())
             }, {
-                Log.d("MyLog", it.message.toString())
+                Log.d("text_myLog", it.message.toString())
             })
     }
 
