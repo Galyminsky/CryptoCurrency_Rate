@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CryptoCurrency_Rate</string>
+    <string name="ls_up">Время последнего обновления: %s</string>
+    <string name="symbols_template">%s / %s</string>
 </resources>

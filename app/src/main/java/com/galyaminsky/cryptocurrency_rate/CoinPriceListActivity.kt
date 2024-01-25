@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.galyaminsky.cryptocurrency_rate.adapters.CoinInfoAdapter
 import com.galyaminsky.cryptocurrency_rate.databinding.ActivityCoinPriceListBinding
+import com.galyaminsky.cryptocurrency_rate.pojo.CoinPriceInfo
 
 
 class CoinPriceListActivity : AppCompatActivity() {
@@ -19,7 +20,13 @@ class CoinPriceListActivity : AppCompatActivity() {
         binding = ActivityCoinPriceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = CoinInfoAdapter()
+        val adapter = CoinInfoAdapter(this)
+        adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
+            override fun onCoinClick(coinPriceInfo: CoinPriceInfo) {
+                Log.d("ON_CLICK_TEST", coinPriceInfo.fromSymbol)
+            }
+
+        }
         binding.rvCoinPriceList.adapter = adapter
 
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
@@ -27,7 +34,6 @@ class CoinPriceListActivity : AppCompatActivity() {
         viewModel.priceList.observe(this, Observer {
            adapter.coinInfoList = it
         })
-
 
     }
 }
