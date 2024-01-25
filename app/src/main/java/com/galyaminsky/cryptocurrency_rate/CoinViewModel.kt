@@ -3,6 +3,7 @@ package com.galyaminsky.cryptocurrency_rate
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import com.galyaminsky.cryptocurrency_rate.api.ApiFactory
 import com.galyaminsky.cryptocurrency_rate.database.AppDatabase
 import com.galyaminsky.cryptocurrency_rate.pojo.CoinPriceInfo
@@ -18,7 +19,15 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
     val priceList = db.CoinPriceInfoDao().getPriceList()
 
-    fun loadData() {
+    init {
+        loadData()
+    }
+
+    fun getDetailInfo(fSym: String) : LiveData<CoinPriceInfo> {
+        return db.CoinPriceInfoDao().getPriceInfoAboutCoin(fSym)
+    }
+
+    private fun loadData() {
         val disposable = ApiFactory.apiService.getTopCoinsInfo(limit = 50)
             .map { it.data?.map { it.coinInfo?.name }?.joinToString(",").toString() }
             .flatMap { ApiFactory.apiService.getFullPriceList(fSyms = it) }
