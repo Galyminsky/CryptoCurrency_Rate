@@ -8,7 +8,6 @@ import com.galyaminsky.cryptocurrency_rate.database.AppDatabase
 import com.galyaminsky.cryptocurrency_rate.pojo.CoinPriceInfo
 import com.galyaminsky.cryptocurrency_rate.pojo.CoinPriceInfoRawData
 import com.google.gson.Gson
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -20,15 +19,16 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
     val priceList = db.CoinPriceInfoDao().getPriceList()
 
     fun loadData() {
-        val disposable = ApiFactory.apiService.getTopCoinsInfo()
+        val disposable = ApiFactory.apiService.getTopCoinsInfo(limit = 50)
             .map { it.data?.map { it.coinInfo?.name }?.joinToString(",").toString() }
             .flatMap { ApiFactory.apiService.getFullPriceList(fSyms = it) }
+            .map { getPriceListFromRawData(it) }
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Log.d("text_myLog", it.toString())
+                db.CoinPriceInfoDao().insertPriceList(it)
+                Log.d("text_myLog", "Success: $it")
             }, {
-                Log.d("text_myLog", it.message.toString())
+                Log.d("text_myLog", "Error: $it.message")
             })
         compositeDisposable.add(disposable)
     }
