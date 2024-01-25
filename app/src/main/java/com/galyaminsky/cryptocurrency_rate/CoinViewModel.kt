@@ -20,12 +20,12 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
     val priceList = db.CoinPriceInfoDao().getPriceList()
 
-    init {
-        loadData()
+    fun getDetailInfo(fSym: String): LiveData<CoinPriceInfo> {
+        return db.CoinPriceInfoDao().getPriceInfoAboutCoin(fSym)
     }
 
-    fun getDetailInfo(fSym: String) : LiveData<CoinPriceInfo> {
-        return db.CoinPriceInfoDao().getPriceInfoAboutCoin(fSym)
+    init {
+        loadData()
     }
 
     private fun loadData() {
@@ -48,8 +48,7 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun getPriceListFromRawData(coinPriceInfoRawData: CoinPriceInfoRawData): List<CoinPriceInfo> {
         val result = ArrayList<CoinPriceInfo>()
-        val jsonObject = coinPriceInfoRawData.coinPriceInfoJsonObject
-        if (jsonObject == null) return result
+        val jsonObject = coinPriceInfoRawData.coinPriceInfoJsonObject ?: return result
         val coinKeySet = jsonObject.keySet()
         for (coinKey in coinKeySet) {
             val currencyJson = jsonObject.getAsJsonObject(coinKey)
